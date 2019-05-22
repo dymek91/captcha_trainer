@@ -1,4 +1,4 @@
-# Created by .ignore support plugin (hsz.mobi)
+﻿# Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -87,3 +87,7 @@ nohup.out
 model/*
 config.yaml
 model.yaml
+
+dataset/
+logs/
+data/

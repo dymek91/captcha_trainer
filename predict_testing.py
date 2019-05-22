@@ -100,7 +100,7 @@ if __name__ == '__main__':
     sess.graph.finalize()
 
     # Fill in your own sample path
-    image_dir = r"E:\Task\Trains\****"
+    image_dir = r"D:\Programy\github-repos\captcha_recognize\data\test_data"
     for i, p in enumerate(os.listdir(image_dir)):
         n = os.path.join(image_dir, p)
         if i > 1000:

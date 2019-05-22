@@ -15,7 +15,7 @@ recurrent_network = RecurrentNetwork.BLSTM
 optimizer = Optimizer.AdaBound
 
 trains_path = [
-    r"D:\TrainSet\***",
+    r"D:\Programy\github-repos\captcha_recognize\data\train_data",
 ]
 
 test_num = 300
@@ -117,8 +117,8 @@ Trains:
   EndAcc: 0.95
   EndCost: 0.1
   EndEpochs: 2
-  BatchSize: 128
-  TestBatchSize: 300
+  BatchSize: 64
+  TestBatchSize: 150
   LearningRate: @learning_rate
   DecayRate: 0.98
   DecaySteps: 10000
