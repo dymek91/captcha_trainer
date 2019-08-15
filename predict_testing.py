@@ -6,12 +6,28 @@ import cv2
 import numpy as np
 import PIL.Image as PIL_Image
 import tensorflow as tf
+import random
 from importlib import import_module
 from config import *
 from constants import RunMode
 from pretreatment import preprocessing
 from framework import GraphOCR
 
+def desaturate(image: PIL_Image, debug=False):
+    image = image.convert('RGB')
+    np_rgb = np.array(image)
+    # Luminosity
+    np_grey = np.multiply(np_rgb, [0.2126, 0.7152, 0.0722])
+    np_grey_sum = np_grey.sum(axis=2).astype(int)
+    image = PIL_Image.fromarray(np_grey_sum)
+    image = image.convert('L')
+    # lightness
+    # return int((max(red, green, blue) + min(red, green, blue)) / 2)
+    # Luminosity
+    # return int(red * 0.3 + green * 0.59 + blue * 0.11)
+    #ver2
+    # (Red * 0.2126 + Green * 0.7152 + Blue * 0.0722)
+    return image
 
 def get_image_batch(img_bytes):
 
@@ -27,7 +43,8 @@ def get_image_batch(img_bytes):
             pil_image = background
 
         if IMAGE_CHANNEL == 1:
-            pil_image = pil_image.convert('L')
+            pil_image = desaturate(pil_image);
+            # pil_image = pil_image.convert('L')
 
         im = np.array(pil_image)
         im = preprocessing(im, BINARYZATION, SMOOTH, BLUR).astype(np.float32)
@@ -99,11 +116,15 @@ if __name__ == '__main__':
     x_op = sess.graph.get_tensor_by_name('input:0')
     sess.graph.finalize()
 
+    answers_num = 0
+    correct_num = 0
     # Fill in your own sample path
+    # D:\Programy\github-repos\kerlomz\captcha_trainer\data\test_data
+    # D:\Programy\github-repos\kerlomz\captcha_trainer\data\generated\phpfusionCaptcha\test_data
     image_dir = r"D:\Programy\github-repos\kerlomz\captcha_trainer\data\test_data"
     for i, p in enumerate(os.listdir(image_dir)):
         n = os.path.join(image_dir, p)
-        if i > 1000:
+        if i > 3000:
             break
         with open(n, "rb") as f:
             b = f.read()
@@ -115,6 +136,11 @@ if __name__ == '__main__':
             dense_decoded_op,
             x_op,
         )
-
-        print(i, p, predict_text)
-
+        answers_num+=1
+        correct_answer = p[:p.find('_')]
+        is_correct = 'WRONG'
+        if correct_answer == predict_text:
+            is_correct = 'CORRECT'
+            correct_num +=1
+        print(i, p, predict_text, is_correct)
+    print('Accuracy: '+str(correct_num / answers_num))
